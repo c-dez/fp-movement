@@ -11,5 +11,29 @@ config_version=5
 [application]
 
 config/name="fp-movement"
+run/main_scene="res://scenes/player/player.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
+
+[input]
+
+left={
+"deadzone": 0.5,
+"events": []
+}
+right={
+"deadzone": 0.5,
+"events": []
+}
+forward={
+"deadzone": 0.5,
+"events": []
+}
+backwards={
+"deadzone": 0.5,
+"events": []
+}
+jump={
+"deadzone": 0.5,
+"events": []
+}

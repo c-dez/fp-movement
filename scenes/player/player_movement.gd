@@ -10,6 +10,7 @@ func _physics_process(delta: float) -> void:
 	jump_player()
 	gravity_player(delta)
 	move_and_slide()
+	# print(position)
 	pass
 
 
@@ -37,3 +38,5 @@ func gravity_player(delta:float)->void:
 	# gravity
 	if not is_on_floor():
 		velocity += get_gravity() * delta
+
+

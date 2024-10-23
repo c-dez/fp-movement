@@ -1,16 +1,18 @@
 extends CharacterBody3D
 
 
+@onready var player_mesh:Node3D = get_node("MeshInstance3D")
+
 @export var speed:float = 5.0
 @export var jump_velocity:float = 4.5
-
+@export var weight:float = 0.2
 
 func _physics_process(delta: float) -> void:
 	move_player()
 	jump_player()
 	gravity_player(delta)
 	move_and_slide()
-	# print(position)
+
 	pass
 
 
@@ -24,6 +26,13 @@ func move_player()->void:
 	else:
 		velocity.x = move_toward(velocity.x, 0, speed)
 		velocity.z = move_toward(velocity.z, 0, speed)
+	rotate_mesh(input_dir)	
+
+
+func rotate_mesh(input_dir:Vector2)->void:
+	# rotate mesh to input_dir
+	if input_dir != Vector2.ZERO:	
+		player_mesh.rotation.y = lerp_angle(player_mesh.rotation.y, atan2(-input_dir.x, -input_dir.y), weight)
 	pass
 
 
@@ -38,5 +47,4 @@ func gravity_player(delta:float)->void:
 	# gravity
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-
-
+	pass

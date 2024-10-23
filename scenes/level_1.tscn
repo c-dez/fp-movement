@@ -4,16 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://baqn8bovfdhg" path="res://scenes/block.tscn" id="2_7trcb"]
 [ext_resource type="PackedScene" uid="uid://2uk5wr5eawy2" path="res://scenes/coin.tscn" id="5_0r2ab"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4bd6t"]
-albedo_color = Color(0.734, 0.43, 1, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_fw0mj"]
-material = SubResource("StandardMaterial3D_4bd6t")
-size = Vector3(100, 0.5, 100)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_6gc3h"]
-size = Vector3(100, 0.5, 100)
-
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_lx2eb"]
 sky_top_color = Color(0.126698, 0.488014, 0.634503, 1)
 sky_horizon_color = Color(0.827953, 0.591893, 0.493086, 1)
@@ -30,10 +20,23 @@ sky = SubResource("Sky_clxvp")
 ambient_light_color = Color(0.82, 0.82, 0.82, 1)
 ambient_light_sky_contribution = 0.7
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4bd6t"]
+albedo_color = Color(0.734, 0.43, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_fw0mj"]
+material = SubResource("StandardMaterial3D_4bd6t")
+size = Vector3(100, 0.5, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6gc3h"]
+size = Vector3(100, 0.5, 100)
+
 [node name="Level1" type="Node3D"]
 
 [node name="Player" parent="." instance=ExtResource("1_j644l")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_kt0j7")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.48481, 0.87462, 0, -0.87462, 0.48481, 0, 9, 0)
@@ -55,8 +58,5 @@ transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, 0, 4.63118
 
 [node name="Coin" parent="." instance=ExtResource("5_0r2ab")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.36583, 0.987785, 0)
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_kt0j7")
 
 [connection signal="body_entered" from="Coin" to="Coin" method="_on_body_entered"]

@@ -2,7 +2,7 @@ extends Node3D
 
 # top_level = false
 @onready var player:Node3D = get_node("..")
-@onready var player_mesh:MeshInstance3D = get_node("../MeshInstance3D")
+# @onready var player_mesh:MeshInstance3D = get_node("../MeshInstance3D")
 
 @export var x_sens:float = 0.10
 @export var y_sens:float = 0.12
@@ -23,9 +23,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			# rotates player in horizontal
 			player.rotate_y(deg_to_rad(-mouse_relative.x * x_sens))
 			# rotate camera vertical / clamp
-			var max_deg:float = deg_to_rad(-45)
-			var min_deg:float = deg_to_rad(45)
+			var max_rad:float = deg_to_rad(-45)
+			var min_rad:float = deg_to_rad(45)
 			rotate_x(deg_to_rad(-mouse_relative.y * y_sens))
-			rotation.x = clamp(rotation.x,max_deg, min_deg)
-			rotation.z = clamp(rotation.z,0,0)
+			rotation.x = clamp(rotation.x, max_rad, min_rad)
+			rotation.z = clamp(rotation.z, 0, 0)
 	pass

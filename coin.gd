@@ -12,5 +12,7 @@ func _process(delta: float) -> void:
 	pass
 
 func _on_body_entered(_body:Node3D) -> void:
-	queue_free()
-	pass # Replace with function body.
+	# player esta en grupo "player"
+	if _body.is_in_group("player"):
+		queue_free()
+	pass 

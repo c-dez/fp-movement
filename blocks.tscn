@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://bndrm25tsf5sd"]
+
+[ext_resource type="PackedScene" uid="uid://bx46ytn2rlg8l" path="res://assets/blocks.glb" id="1_lev31"]
+
+[node name="blocks" instance=ExtResource("1_lev31")]

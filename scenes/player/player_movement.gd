@@ -2,17 +2,44 @@ extends CharacterBody3D
 
 
 @onready var player_mesh:Node3D = get_node("MeshInstance3D")
+@onready var dash_timer:Timer = get_node("DashTimer")
 
-@export var speed:float = 5.0
-@export var jump_velocity:float = 4.5
-@export var weight:float = 0.2
+@export var speed:float = 7.0
+@export var jump_velocity:float = 7.5
+@export var rotate_mesh_weight:float = 0.2
+@export var dash_countdown_time:float = 1.0
+# INTERNAL
+var dash_countdown_time_internal:float = 0
+
+
+
+func _ready() -> void:
+	# dash_timer.one_shot = true
+	# dash_timer.timeout.connect(_on_dash_player_timeout)
+	pass
 
 func _physics_process(delta: float) -> void:
 	move_player()
 	jump_player()
 	gravity_player(delta)
 	move_and_slide()
+	dash_player(delta)
 
+	pass
+
+
+func dash_player(_delta:float):
+	# esta funcion se encarga de ejecutar codigo durante x segundos
+
+	# al presionar shift, el valor de dash_coutdown_time se asigna a el internal 
+	if Input.is_action_just_pressed("shift"):
+		dash_countdown_time_internal = dash_countdown_time
+	# mientras internal sea mayor que cero, se ejecuta bloque
+	while dash_countdown_time_internal > 0:
+		# CODIGO
+		print(dash_countdown_time_internal)
+		# ROMPE EL LOOP
+		dash_countdown_time_internal -= _delta
 	pass
 
 
@@ -32,7 +59,7 @@ func move_player()->void:
 func rotate_mesh(input_dir:Vector2)->void:
 	# rotate mesh to input_dir
 	if input_dir != Vector2.ZERO:	
-		player_mesh.rotation.y = lerp_angle(player_mesh.rotation.y, atan2(-input_dir.x, -input_dir.y), weight)
+		player_mesh.rotation.y = lerp_angle(player_mesh.rotation.y, atan2(-input_dir.x, -input_dir.y), rotate_mesh_weight)
 	pass
 
 

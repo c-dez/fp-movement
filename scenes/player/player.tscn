@@ -51,6 +51,3 @@ metadata/_edit_group_ = true
 
 [node name="ThirdP_cam" type="Camera3D" parent="Camera_controller/Camera_target"]
 metadata/_edit_group_ = true
-
-[node name="DashTimer" type="Timer" parent="."]
-one_shot = true

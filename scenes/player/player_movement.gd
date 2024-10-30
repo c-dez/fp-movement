@@ -1,16 +1,18 @@
 extends CharacterBody3D
 
 
-@onready var player_mesh:Node3D = get_node("MeshInstance3D")
+@onready var player_mesh:MeshInstance3D = get_node("MeshInstance3D")
 
-# Move
+# Normal
 var speed:float = 7.0
 var jump_velocity:float = 7.5
 # DASH
-var dash_speed:float = 14
-var dash_countdown_time:float = 0.3
+var speed_dash:float = 14
+var dash_countdown_time:float = 0.5
+var dash_cooldown:float = 1
 # INTERNAL
 var dash_countdown_time_internal:float = 0
+var dash_coolddown_internal:float = 0
 # MISC
 var rotate_mesh_weight:float = 0.2
 
@@ -25,7 +27,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	change_move_state_to_dash_countdown(delta)
-	# QUIERO QUE LA VELOCIDAD DE DASH SE MANTENGA EN EL AIRE AUNQUE YA HALLA EXPIRADO LA CUENTA REGRESIVA DE  change_move_state_to_dash_countdown QUEDA PENDIENTE
+	
 
 	
 	pass
@@ -39,27 +41,46 @@ func _physics_process(delta: float) -> void:
 	pass
 
 
+
+
+func move_player_speed_match()->void:
+	# elige la velocidad de movimiento segun el estado
+	match move_state:
+		MOVE_STATE.NORMAL:
+			move_player(speed)
+		MOVE_STATE.DASH:
+			move_player(speed_dash)
+	pass
+
+
+
+
+
+
+
 func change_move_state_to_dash_countdown(_delta:float)->void:
 	# esta funcion se encarga de cambiar valor de move_state entre normal y dashing al presionar shift, durante x tiempo move_state == 1, (enum MOVE_STATE.DASH)
-	if Input.is_action_just_pressed("shift"):
+
+	# tambien se hace cargo de su propio cooldown para que Player no pueda spamearla
+	if Input.is_action_just_pressed("shift") and dash_coolddown_internal == 0:
 		dash_countdown_time_internal = dash_countdown_time
+
+		dash_coolddown_internal = dash_cooldown
+
 	if dash_countdown_time_internal > 0 :
 		dash_countdown_time_internal -= _delta
 		move_state = MOVE_STATE.DASH
 	elif dash_countdown_time_internal < 0:
 		dash_countdown_time_internal = 0
 		move_state = MOVE_STATE.NORMAL
+
+	if dash_coolddown_internal > 0:
+		dash_coolddown_internal -= _delta
+	elif dash_coolddown_internal < 0:
+		dash_coolddown_internal = 0
 		pass
 	pass
 
-func move_player_speed_match():
-	# elige la velocidad de movimiento segun el estado
-	match move_state:
-		MOVE_STATE.NORMAL:
-			move_player(speed)
-		MOVE_STATE.DASH:
-			move_player(dash_speed)
-	pass
 
 
 func move_player(_speed:float)->void:

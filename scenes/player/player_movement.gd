@@ -3,6 +3,8 @@ extends CharacterBody3D
 
 @onready var player_mesh:MeshInstance3D = get_node("MeshInstance3D")
 
+@onready var grid = get_node("../GridMap")
+
 # Normal
 var speed:float = 7.0
 var jump_velocity:float = 7.5
@@ -13,6 +15,8 @@ var dash_cooldown:float = 1
 # INTERNAL
 var dash_countdown_time_internal:float = 0
 var dash_coolddown_internal:float = 0
+var last_position:Vector3
+
 # MISC
 var rotate_mesh_weight:float = 0.2
 
@@ -27,6 +31,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	change_move_state_to_dash_countdown(delta)
+
 	
 	# Coyote time!!!
 	
@@ -38,7 +43,10 @@ func _physics_process(delta: float) -> void:
 	jump_player()
 	gravity_player(delta)
 	move_and_slide()
+
+	player_last_position()
 	pass
+
 
 
 
@@ -51,11 +59,6 @@ func change_move_player_speed()->void:
 		MOVE_STATE.DASH:
 			move_player(speed_dash)
 	pass
-
-
-
-
-
 
 
 func change_move_state_to_dash_countdown(_delta:float)->void:
@@ -76,7 +79,6 @@ func change_move_state_to_dash_countdown(_delta:float)->void:
 		dash_coolddown_internal -= _delta
 	elif dash_coolddown_internal < 0:
 		dash_coolddown_internal = 0
-
 
 
 func move_player(_speed:float)->void:
@@ -111,3 +113,24 @@ func gravity_player(delta:float)->void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 	pass
+
+
+func _on_fall_zone_body_entered(_body:Node3D) -> void:
+	if _body.is_in_group("player"):
+		call_deferred("change_player_to_last_position")
+
+
+func change_player_to_last_position()->void:
+	position = player_last_position()
+
+
+func player_last_position()->Vector3:
+	# regresa la ultima posicion de el Player mientras este tocando el suelo
+
+	# Uso este valor para regresar a Player a esa posicion al entrar en  nodo FallZone en func change_player_to_last_position()
+	if is_on_floor():
+		last_position = position
+		# last_position = grid.local_to_map(position)
+		print(last_position)
+
+	return last_position

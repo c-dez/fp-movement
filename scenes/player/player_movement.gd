@@ -28,13 +28,13 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	change_move_state_to_dash_countdown(delta)
 	
-
+	# Coyote time!!!
 	
 	pass
 
 
 func _physics_process(delta: float) -> void:
-	move_player_speed_match()
+	change_move_player_speed()
 	jump_player()
 	gravity_player(delta)
 	move_and_slide()
@@ -43,7 +43,7 @@ func _physics_process(delta: float) -> void:
 
 
 
-func move_player_speed_match()->void:
+func change_move_player_speed()->void:
 	# elige la velocidad de movimiento segun el estado
 	match move_state:
 		MOVE_STATE.NORMAL:
@@ -64,22 +64,18 @@ func change_move_state_to_dash_countdown(_delta:float)->void:
 	# tambien se hace cargo de su propio cooldown para que Player no pueda spamearla
 	if Input.is_action_just_pressed("shift") and dash_coolddown_internal == 0:
 		dash_countdown_time_internal = dash_countdown_time
-
 		dash_coolddown_internal = dash_cooldown
-
 	if dash_countdown_time_internal > 0 :
 		dash_countdown_time_internal -= _delta
 		move_state = MOVE_STATE.DASH
 	elif dash_countdown_time_internal < 0:
 		dash_countdown_time_internal = 0
 		move_state = MOVE_STATE.NORMAL
-
+	# Cooldown	
 	if dash_coolddown_internal > 0:
 		dash_coolddown_internal -= _delta
 	elif dash_coolddown_internal < 0:
 		dash_coolddown_internal = 0
-		pass
-	pass
 
 
 

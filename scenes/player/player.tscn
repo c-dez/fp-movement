@@ -28,6 +28,7 @@ shape = SubResource("CapsuleShape3D_vsayd")
 metadata/_edit_group_ = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("CapsuleMesh_b8dj4")
 metadata/_edit_group_ = true
 
@@ -38,7 +39,7 @@ mesh = SubResource("BoxMesh_1i8hd")
 skeleton = NodePath("../..")
 
 [node name="Camera_controller" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0485697, -0.71248)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0485697, -0.219376)
 script = ExtResource("2_a1w5d")
 
 [node name="FPS_Camera" type="Camera3D" parent="Camera_controller"]

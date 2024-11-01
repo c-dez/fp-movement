@@ -3,22 +3,25 @@ extends CharacterBody3D
 
 @onready var player_mesh:MeshInstance3D = get_node("MeshInstance3D")
 
-@onready var grid = get_node("../GridMap")
 
-# Normal
+# move/normal
 var speed:float = 7.0
 var jump_velocity:float = 7.5
-# DASH
+# move/DASH
 var speed_dash:float = 14
 var dash_countdown_time:float = 0.5
-var dash_cooldown:float = 1
-# INTERNAL
 var dash_countdown_time_internal:float = 0
+var dash_cooldown:float = 1
 var dash_coolddown_internal:float = 0
-var last_position:Vector3
-
 # MISC
+var last_position:Vector3
 var rotate_mesh_weight:float = 0.2
+
+#coyote time
+var coyote_time_time:float = 0.3
+var coyote_time_time_internal:float = 0
+var can_jump:bool = true
+
 
 enum MOVE_STATE {NORMAL, DASH}
 # move_state usa enum MOVE_STATE para diferenciar entre moverse a velocidad normal, dash
@@ -31,27 +34,33 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	change_move_state_to_dash_countdown(delta)
-
-	
-	# Coyote time!!!
 	
 	pass
 
 
 func _physics_process(delta: float) -> void:
-	change_move_player_speed()
+	move_player_speed_state()
+	coyote_time(delta)
 	jump_player()
 	gravity_player(delta)
-	move_and_slide()
-
 	player_last_position()
+	move_and_slide()
 	pass
 
+func coyote_time(_delta:float)->void:
+	if is_on_floor():
+		coyote_time_time_internal = coyote_time_time
+	else:
+		coyote_time_time_internal -= _delta
+	
+	if coyote_time_time_internal > 0:
+		can_jump = true
+	elif coyote_time_time_internal < 0:
+		can_jump = false
+		coyote_time_time_internal = 0
 
 
-
-
-func change_move_player_speed()->void:
+func move_player_speed_state()->void:
 	# elige la velocidad de movimiento segun el estado
 	match move_state:
 		MOVE_STATE.NORMAL:
@@ -103,8 +112,9 @@ func rotate_mesh(input_dir:Vector2)->void:
 
 func jump_player()->void:
 	# Handle jump.
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+	if Input.is_action_just_pressed("jump") and can_jump:
 		velocity.y = jump_velocity
+		can_jump = false
 	pass
 
 
@@ -116,6 +126,7 @@ func gravity_player(delta:float)->void:
 
 
 func _on_fall_zone_body_entered(_body:Node3D) -> void:
+	# senal de nodo FallZone
 	if _body.is_in_group("player"):
 		call_deferred("change_player_to_last_position")
 
@@ -128,9 +139,9 @@ func player_last_position()->Vector3:
 	# regresa la ultima posicion de el Player mientras este tocando el suelo
 
 	# Uso este valor para regresar a Player a esa posicion al entrar en  nodo FallZone en func change_player_to_last_position()
+
+	# TODO QUE TAMBIEN GUARDE LA DIRECCION A LA QUE MIRA PLAYER
 	if is_on_floor():
 		last_position = position
 		# last_position = grid.local_to_map(position)
-		print(last_position)
-
 	return last_position

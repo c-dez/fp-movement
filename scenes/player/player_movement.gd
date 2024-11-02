@@ -6,7 +6,8 @@ extends CharacterBody3D
 
 # move/normal
 var speed:float = 7.0
-var jump_velocity:float = 7.5
+var jump_velocity:float = 10
+const GRAVITY:float = -18
 # move/DASH
 var speed_dash:float = 14
 var dash_countdown_time:float = 0.5
@@ -14,13 +15,19 @@ var dash_countdown_time_internal:float = 0
 var dash_cooldown:float = 1
 var dash_coolddown_internal:float = 0
 # MISC
-var last_position:Vector3
+var last_position:Vector3 # Respawn after falling
 var rotate_mesh_weight:float = 0.2
 
 #coyote time
 var coyote_time_time:float = 0.3
 var coyote_time_time_internal:float = 0
 var can_jump:bool = true
+
+# Wall Jump
+enum WALL_JUMP_STATE {OUT_WALL, IN_WALL}
+var wall_state: int
+var wall_jump_cooldown: float = 0.5
+var wall_jump_cooldown_internal: float = 0
 
 
 enum MOVE_STATE {NORMAL, DASH}
@@ -44,7 +51,9 @@ func _physics_process(delta: float) -> void:
 	jump_player()
 	gravity_player(delta)
 	player_last_position()
+	wall_jump(delta)
 	move_and_slide()
+
 	pass
 
 func coyote_time(_delta:float)->void:
@@ -114,14 +123,13 @@ func jump_player()->void:
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and can_jump:
 		velocity.y = jump_velocity
-		can_jump = false
 	pass
 
 
 func gravity_player(delta:float)->void:
 	# gravity
 	if not is_on_floor():
-		velocity += get_gravity() * delta
+		velocity.y += GRAVITY * delta
 	pass
 
 
@@ -132,6 +140,7 @@ func _on_fall_zone_body_entered(_body:Node3D) -> void:
 
 
 func change_player_to_last_position()->void:
+	# Se encarga de respwn Player al entrar a FallZone
 	position = player_last_position()
 
 
@@ -145,3 +154,35 @@ func player_last_position()->Vector3:
 		last_position = position
 		# last_position = grid.local_to_map(position)
 	return last_position
+
+# WALL JUMP
+func _on_wall_area_body_entered(body:Node3D) -> void:
+	# senal mandada desde nodo WallArea cuando entra en body con nombre "GridMap" y cambia el wall_state
+	if body.name == "GridMap":
+		wall_state = WALL_JUMP_STATE.IN_WALL
+
+
+func _on_wall_area_body_exited(body:Node3D) -> void:
+	# senal cuando sale de un body
+	if body.name == "GridMap":
+		wall_state = WALL_JUMP_STATE.OUT_WALL
+
+
+func wall_jump(_delta:float)->void:
+	# este match se encarga de permitir brincar cuando esta en contacto con un muro segun sea el wall_state
+	match wall_state:
+		WALL_JUMP_STATE.IN_WALL:
+			if Input.is_action_just_pressed("jump") and not is_on_floor() and wall_jump_cooldown_internal == 0:
+				velocity.y = jump_velocity
+				wall_jump_cooldown_internal = wall_jump_cooldown
+		WALL_JUMP_STATE.OUT_WALL:
+			# Se hace cargo de un cooldown para evitar spamear brinco
+			if not is_on_floor():
+				wall_jump_cooldown_internal -= _delta
+			if wall_jump_cooldown_internal < 0:
+				wall_jump_cooldown_internal = 0
+			pass
+			
+			
+
+		

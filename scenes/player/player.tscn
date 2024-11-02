@@ -20,7 +20,7 @@ material = SubResource("StandardMaterial3D_xkaa4")
 size = Vector3(0.6, 0.19, 0.185)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2c65v"]
-size = Vector3(1.78, 1, 0.675)
+size = Vector3(1.78, 1, 1.315)
 
 [node name="Player" type="CharacterBody3D" groups=["player"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.768214, 0)

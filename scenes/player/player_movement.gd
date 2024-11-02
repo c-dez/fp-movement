@@ -8,12 +8,17 @@ extends CharacterBody3D
 var speed:float = 7.0
 var jump_velocity:float = 10
 const GRAVITY:float = -18
+enum MOVE_STATE {NORMAL, DASH}
+# move_state usa enum MOVE_STATE para diferenciar entre moverse a velocidad normal, dash
+var move_state:int
+
 # move/DASH
 var speed_dash:float = 14
 var dash_countdown_time:float = 0.5
 var dash_countdown_time_internal:float = 0
 var dash_cooldown:float = 1
 var dash_coolddown_internal:float = 0
+
 # MISC
 var last_position:Vector3 # Respawn after falling
 var rotate_mesh_weight:float = 0.2
@@ -30,13 +35,9 @@ var wall_jump_cooldown: float = 0.5
 var wall_jump_cooldown_internal: float = 0
 
 
-enum MOVE_STATE {NORMAL, DASH}
-# move_state usa enum MOVE_STATE para diferenciar entre moverse a velocidad normal, dash
-var move_state:int
-
-
 func _ready() -> void:
 	move_state = MOVE_STATE.NORMAL
+	wall_state = WALL_JUMP_STATE.OUT_WALL
 	pass
 
 func _process(delta: float) -> void:

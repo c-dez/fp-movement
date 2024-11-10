@@ -33,6 +33,7 @@ enum WALL_JUMP_STATE {OUT_WALL, IN_WALL}
 var wall_state: int
 var wall_jump_cooldown: float = 0.5
 var wall_jump_cooldown_internal: float = 0
+var wall_jump_velocity: float = 12
 
 
 func _ready() -> void:
@@ -174,7 +175,7 @@ func wall_jump(_delta:float)->void:
 	match wall_state:
 		WALL_JUMP_STATE.IN_WALL:
 			if Input.is_action_just_pressed("jump") and not is_on_floor() and wall_jump_cooldown_internal == 0:
-				velocity.y = jump_velocity
+				velocity.y = wall_jump_velocity
 				wall_jump_cooldown_internal = wall_jump_cooldown
 		WALL_JUMP_STATE.OUT_WALL:
 			# Se hace cargo de un cooldown para evitar spamear brinco
